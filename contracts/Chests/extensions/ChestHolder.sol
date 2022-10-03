@@ -3,13 +3,16 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
+    using Strings for address;
 
     enum Token { ZERO, ERC20, ERC721, ERC1155 }
 
@@ -38,7 +41,13 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
    |           Write Functions          |
    |__________________________________*/
 
-    /// @notice Store the Items (ERC721) informations when deposited in the Chest 
+     /**
+     * @dev When ERC721 is deposited this function is call by the token's smart contract.
+     *
+     * Requirements:
+     *
+     * - Revert if the token address is not white listed to be stored in.
+     */
     function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data ) public virtual override returns (bytes4) {
       operator; from; data;
       require(tokenWhiteListed[msg.sender] == true, "onRC721Received: Token is not white listed to be stored in the chest");
@@ -55,6 +64,13 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
       return this.onERC721Received.selector;
     }
 
+     /**
+     * @dev When ERC1155 is deposited this function is call by the token's smart contract.
+     *
+     * Requirements:
+     *
+     * - Revert if the token address is not white listed to be stored in.
+     */
     function onERC1155Received(
         address operator, 
         address from, 
@@ -77,6 +93,14 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
       return this.onERC1155Received.selector;
     }
 
+    /**
+     * @dev When ERC1155 is batch deposited this function is call by the token's smart contract.
+     *
+     * Requirements:
+     *
+     * - Revert if the token address is not white listed to be stored in.
+     *
+     */
     function onERC1155BatchReceived(
         address operator,
         address from,
@@ -102,6 +126,13 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
       return this.onERC1155Received.selector;
     }
 
+    /**
+     * @dev When ERC20 is deposited {batchDeposit} this function is call by this smart contract.
+     *
+     * Requirements:
+     *
+     * - Revert if the token address must be white listed to be stored in.
+     */
     function onERC20Received(address operator, address from, uint256 value, address token) public virtual returns (bytes4) {
       operator; from;
       require(tokenWhiteListed[token] == true, "onERC20Received: Token is not white listed to be stored in the chest");
@@ -118,31 +149,55 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
       return this.onERC20Received.selector;
     }
 
-    function addWhiteList(address[] memory tokens, uint8[] memory tokenType_) external onlyOwner {
-      require(tokens.length == tokenType_.length, "whiteListTokens: parameters are not the same length");
+    /**
+     * @dev Authorize tokens to be stored in the chest 
+     *
+     * @param tokens: An array of all the tokens to be white listed to be stored in.
+     *
+     * Requirements:
+     *
+     * - Only owner can whitelist
+     * - Only ERC20, ERC721, ERC1155 accepted
+     */
+    function addWhiteList(address[] memory tokens) external onlyOwner {
 
       for(uint i; i < tokens.length; i++) {
-        if (tokenType_[i] == uint8(Token.ERC20)) {
+        // Check if tokens[i] is a ERC20
+        if (ERC20(tokens[i]).decimals() > 0 && 
+            !IERC721(tokens[i]).supportsInterface(0x80ac58cd) && 
+            !IERC1155(tokens[i]).supportsInterface(0xd9b67a26)) 
+        {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC20;
         }
-        else if (tokenType_[i] == uint8(Token.ERC721)) {
-          require(IERC721(tokens[i]).supportsInterface(0x80ac58cd), "addWhiteList: token is not a ERC721");
+        // Check if tokens[i] is a ERC721
+        else if (IERC721(tokens[i]).supportsInterface(0x80ac58cd)) {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC721;
         }
-        else if (tokenType_[i] == uint8(Token.ERC1155)) {
-          require(IERC1155(tokens[i]).supportsInterface(0xd9b67a26), "addWhiteList: token is not a ERC1155");
+        // Check if tokens[i] is a ERC1155
+        else if (IERC1155(tokens[i]).supportsInterface(0xd9b67a26)) {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC1155;
         }
-        else
-          revert("whiteListTokens: type is not accepted. It must be one of these {1,2,3}");
+        else {
+          revert(string(abi.encodePacked("ChestHolder: token ", tokens[i].toHexString(), " is not supported. Only ERC20, 721, 1155 is allowed")));
+        }
       }
     }
 
+    /**
+     * @dev Remove white listed tokens. 
+     *
+     * @param tokens: An array of all the tokens to be removed of white list.
+     *
+     * Requirements:
+     *
+     * - Only owner can remove whitelist
+     */
     function removeWhiteList(address[] memory tokens) external onlyOwner {
-      for(uint i; i < tokens.length; i++)
+      for(uint i; i < tokens.length; i++) {
         delete tokenWhiteListed[tokens[i]];
+      }
     }
 }
