@@ -153,30 +153,33 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
      * @dev Authorize tokens to be stored in the chest 
      *
      * @param tokens: An array of all the tokens to be white listed to be stored in.
+     * @param tokenType_: An array of types corresponding with the address of token to be whitelisted.
+     * @notice The type design of the tokens is as follow.
+     * - ERC20 => 1
+     * - ERC721 => 2
+     * - ERC1155 => 3
      *
      * Requirements:
      *
      * - Only owner can whitelist
      * - Only ERC20, ERC721, ERC1155 accepted
      */
-    function addWhiteList(address[] memory tokens) external onlyOwner {
+    function addWhiteList(address[] memory tokens, uint8[] memory tokenType_) external onlyOwner {
+      require(tokens.length == tokenType_.length, "whiteListTokens: parameters are not the same length");
 
       for(uint i; i < tokens.length; i++) {
-        // Check if tokens[i] is a ERC20
-        if (ERC20(tokens[i]).decimals() > 0 && 
-            !IERC721(tokens[i]).supportsInterface(0x80ac58cd) && 
-            !IERC1155(tokens[i]).supportsInterface(0xd9b67a26)) 
-        {
+        if (tokenType_[i] == uint8(Token.ERC20)) {
+          require(ERC20(tokens[i]).decimals() > 0, "ChestHolder: Not an erc20 token");
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC20;
         }
-        // Check if tokens[i] is a ERC721
-        else if (IERC721(tokens[i]).supportsInterface(0x80ac58cd)) {
+        else if (tokenType_[i] == uint8(Token.ERC721)) {
+          require(IERC721(tokens[i]).supportsInterface(0x80ac58cd), "addWhiteList: token is not a ERC721");
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC721;
         }
-        // Check if tokens[i] is a ERC1155
-        else if (IERC1155(tokens[i]).supportsInterface(0xd9b67a26)) {
+        else if (tokenType_[i] == uint8(Token.ERC1155)) {
+          require(IERC1155(tokens[i]).supportsInterface(0xd9b67a26), "addWhiteList: token is not a ERC1155");
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC1155;
         }

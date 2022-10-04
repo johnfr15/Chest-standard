@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
@@ -268,6 +268,9 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
         }    
     }
 
+    /**
+     * @dev Support IChest interface.
+     */
     function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
         return interfaceId == type(IChest).interfaceId;
     }
@@ -278,6 +281,7 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
 
     /**
      * @dev Remove tokens's all datas from the chest if their amount reach 0.
+     * this function is called after a successfull loot.
      *
      * @notice This function is inspired by openzeppelin ERC721 enumerable (openzeppelin/token/ERC721/extensions/ERC721Enumerable.sol)
      */
