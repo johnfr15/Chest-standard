@@ -46,6 +46,7 @@ updating ./helpers/deployed.json with Chest on mumbai at 0xc4072a54ede62bf252D39
 
 See contract: https://mumbai.polygonscan.com/address/0xc4072a54ede62bf252D394DB1f7eaE01DeFa7030
 ```
+  
 
 ### STEP 2 -> 3 -> 4: deploy some tokens
 */contracts/Chest/Tokens.sol* 
@@ -70,8 +71,9 @@ npx hardhat --network mumbai run scripts/3_deployERC721.ts
 npx hardhat --network mumbai run scripts/4_deployERC1155.ts
 ```
 
-**Note:** You can see the deployed address in that file `./helpers/deployed.json` at any time 
-
+**Note:** You can see the deployed address in that file `./helpers/deployed.json` at any time
+  
+  
 ### STEP 5: Whitelist the deployed token to be stored in chest
 */contracts/Chest/extensions/ChestHolder.sol*  
 `function addWhiteList(address[] memory tokens, uint8[] memory tokenType_)`  
@@ -86,7 +88,8 @@ Whitelisting token is important in order to avoid malicious tokens enter the che
 ```console
 npx hardhat --network mumbai run scripts/5_addWhitelist.ts
 ```
-
+  
+  
 ### STEP 6: Deposit tokens
 */contracts/Chest/Chest.sol*  
 `function batchDeposit(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts)`  
@@ -113,6 +116,7 @@ Tokens Deposited sucessfully !
 
 See tx: https://mumbai.polygonscan.com/tx/0xc5eefd3a5bf3dcf1cfd9a185f4da7a24b45444b8fd1d96698d7d668f5b01bfa9
 ```
+  
 
 ### STEP 7: Look what's in the chest
 */contracts/Chest/Chest.sol*  
@@ -157,7 +161,8 @@ amounts:  [
 ]
 type_:  [ 1, 2, 3, 3, 3, 3 ]
 ```
-
+  
+  
 ### STEP 8: Loot tokens
 */contracts/Chest/Chest.sol*  
 `function loot(address item, uint256 tokenId, uint256 amount)`  
