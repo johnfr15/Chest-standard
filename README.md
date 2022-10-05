@@ -15,7 +15,7 @@ cd Chest-standard
 npm install
 ```
 
-3. Insert your wallet private key
+3. Insert your wallet private key  
 */.env*
 ```
 DEPLOYER_PRIVATE_KEY = // Input your key
@@ -74,7 +74,7 @@ npx hardhat --network mumbai run scripts/4_deployERC1155.ts
 
 ### STEP 5: Whitelist the deployed token to be stored in chest
 */contracts/Chest/extensions/ChestHolder.sol*  
-`function addWhiteList(address[] memory tokens, uint8[] memory tokenType_) external`
+`function addWhiteList(address[] memory tokens, uint8[] memory tokenType_)`  
 
 Now that we are all set having our tokens and chest deployed, we will need to whitelist our recent deployed token's address to the chest
 so we can deposit them into it.  
@@ -89,7 +89,7 @@ npx hardhat --network mumbai run scripts/5_addWhitelist.ts
 
 ### STEP 6: Deposit tokens
 */contracts/Chest/Chest.sol*  
-`function batchDeposit(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts) external virtual returns(bool success) `
+`function batchDeposit(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts)`  
 
 Well now that our tokens are whitelist let's deposit them into the chest !  
 **Note** Only the owner of the chest can deposit.
@@ -116,7 +116,7 @@ See tx: https://mumbai.polygonscan.com/tx/0xc5eefd3a5bf3dcf1cfd9a185f4da7a24b454
 
 ### STEP 7: Look what's in the chest
 */contracts/Chest/Chest.sol*  
-`function look() external view returns (address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts, uint8[] memory type_)`
+`function look()`  
 
 Everyone can now see what is in the chest.  
 
@@ -160,8 +160,9 @@ type_:  [ 1, 2, 3, 3, 3, 3 ]
 
 ### STEP 8: Loot tokens
 */contracts/Chest/Chest.sol*  
-`function loot(address item, uint256 tokenId, uint256 amount) external virtual returns (address[] memory items, uint256[] memory, tokenIds, uint256[] memory amounts, uint8[] memory type_)`  
-`function batchLoot(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts) external virtual returns(address[] memory items_, uint256[] memory tokenIds_, uint256[] memory amounts_, uint8[] memory type_)`
+`function loot(address item, uint256 tokenId, uint256 amount)`  
+  
+`function batchLoot(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts)`  
 
 Good job if you arrived that far this will be the last step (and the most funny one 🥳) let's loot partially the chest 🥷  
 
