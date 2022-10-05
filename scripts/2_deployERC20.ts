@@ -12,7 +12,7 @@ async function main() {
     console.log("balance: ", ethers.utils.formatEther(await deployer.getBalance()), "MATIC\n");
     
     // Deploying token
-    console.log("Deploying ERC20...")
+    console.log("Deploying ERC20...");
     const ERC20 = await ethers.getContractFactory("ChestERC20", deployer);
     const erc20 = await ERC20.deploy();
     await erc20.deployed();
@@ -20,14 +20,14 @@ async function main() {
     // Store address in file "./helpers/deployed.json"
     await deployed("ChestERC20", hardhat.network.name, erc20.address);
 
-    console.log(`\nSee contract: https://mumbai.polygonscan.com/address/${erc20.address}`)
+    console.log(`\nSee contract: https://mumbai.polygonscan.com/address/${erc20.address}`);
 
     // Mint 10 token
     console.log(`\nMinting 1000000 tokens to ${deployer.address}...`);
     tx = await erc20.mint(ethers.utils.parseEther("1000000"));
     receipt = await tx.wait();
     console.log("Tokens minted sucessfully !");
-    console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
+    console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);
 
   } catch (error: any) {
     console.log(error.message);

@@ -84,7 +84,7 @@ async function main() {
   tx = await chest.batchDeposit(tokens, ids, amounts);
   receipt = await tx.wait();
   console.log("Tokens Deposited sucessfully !");
-  console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
+  console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);
 
 }
 

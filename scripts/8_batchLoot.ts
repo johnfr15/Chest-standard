@@ -13,7 +13,7 @@ async function main() {
   let amounts = [];
 
   console.log("Deployer: ", deployer.address);
-  console.log("balance: ", ethers.utils.formatEther(await deployer.getBalance()), "MATIC");
+  console.log("balance: ", ethers.utils.formatEther(await deployer.getBalance()), "MATIC\n");
 
   try {
     contracts = JSON.parse(await readFile(FILE_PATH, "utf-8"));
@@ -58,10 +58,10 @@ async function main() {
   console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
 
   console.log("Looted:\n");
-  console.log("items: ", looted.items_)
-  console.log("tokenIds: ", looted.tokenIds_)
-  console.log("amounts: ", looted.amounts_)
-  console.log("type_: ", looted.type_)
+  console.log("items: ", looted.items_);
+  console.log("tokenIds: ", looted.tokenIds_);
+  console.log("amounts: ", looted.amounts_);
+  console.log("type_: ", looted.type_);
 
 }
 

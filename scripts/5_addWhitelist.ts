@@ -34,7 +34,7 @@ async function main() {
   tx = await chest.addWhiteList(whitelist, types);
   receipt = await tx.wait();
   console.log("Whitelisted sucessfully !");
-  console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
+  console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);
 
 }
 

@@ -20,14 +20,14 @@ async function main() {
     // Store address in file "./helpers/deployed.json"
     await deployed("ChestERC1155", hardhat.network.name, erc1155.address);
 
-    console.log(`\nSee contract: https://mumbai.polygonscan.com/address/${erc1155.address}`)
+    console.log(`\nSee contract: https://mumbai.polygonscan.com/address/${erc1155.address}`);
 
     // Mint token id 0, 1, 2, 3
     console.log(`\nMinting token id "0, 1, 2, 3" to ${deployer.address}...`);
     tx = await erc1155.mintBatch(deployer.address, [0, 1, 2, 3], [1, 10, 100, 1000], "0x");
     receipt = await tx.wait();
     console.log("Tokens minted sucessfully !");
-    console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
+    console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);
 
   } catch (error: any) {
     console.log(error.message);

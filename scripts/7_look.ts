@@ -19,10 +19,10 @@ async function main() {
 
   console.log("Tokens in chest\n");
   const loots = await chest.look();
-  console.log("items: ", loots.items)
-  console.log("tokenIds: ", loots.tokenIds)
-  console.log("amounts: ", loots.amounts)
-  console.log("type_: ", loots.type_)
+  console.log("items: ", loots.items);
+  console.log("tokenIds: ", loots.tokenIds);
+  console.log("amounts: ", loots.amounts);
+  console.log("type_: ", loots.type_);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
