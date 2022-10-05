@@ -16,7 +16,8 @@ npm install
 ```
 
 3. Insert your wallet private key
-```javascript
+*/.env*
+```
 DEPLOYER_PRIVATE_KEY = // Input your key
 ```
 
@@ -29,7 +30,7 @@ DEPLOYER_PRIVATE_KEY = // Input your key
 Those will occur into 8 steps as follow.
 
 ### STEP 1: deploy Chest.sol
-*contracts/Chest/Chest.sol* 
+*/contracts/Chest/Chest.sol* 
 
 In the first step we will simply deploy the chest on mumbai network.
 
@@ -38,7 +39,7 @@ npx hardhat --network mumbai run scripts/1_deployChest.ts
 ```
 
 You should now be able to see this on your console to see your chest on mumbai network.
-```console
+```
 Deploying chest...
 Chest deployed on mumbai at 0xc4072a54ede62bf252D394DB1f7eaE01DeFa7030
 updating ./helpers/deployed.json with Chest on mumbai at 0xc4072a54ede62bf252D394DB1f7eaE01DeFa7030
@@ -47,7 +48,7 @@ See contract: https://mumbai.polygonscan.com/address/0xc4072a54ede62bf252D394DB1
 ```
 
 ### STEP 2 -> 3 -> 4: deploy some tokens
-*contracts/Chest/Tokens.sol* 
+*/contracts/Chest/Tokens.sol* 
 
 In order to check all the potential of the chest smart contract let's also deploy & mint some 
 - ERC20 token
@@ -72,8 +73,8 @@ npx hardhat --network mumbai run scripts/4_deployERC1155.ts
 **Note:** You can see the deployed address in that file `./helpers/deployed.json` at any time 
 
 ### STEP 5: Whitelist the deployed token to be stored in chest
-*contracts/Chest/extensions/ChestHolder.sol*
-`addWhiteList`
+*/contracts/Chest/extensions/ChestHolder.sol*  
+`function addWhiteList(address[] memory tokens, uint8[] memory tokenType_) external`
 
 Now that we are all set having our tokens and chest deployed, we will need to whitelist our recent deployed token's address to the chest
 so we can deposit them into it.  
@@ -87,8 +88,8 @@ npx hardhat --network mumbai run scripts/5_addWhitelist.ts
 ```
 
 ### STEP 6: Deposit tokens
-*contracts/Chest/Chest.sol*
-`batchDeposit`
+*/contracts/Chest/Chest.sol*  
+`function batchDeposit(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts) external virtual returns(bool success) `
 
 Well now that our tokens are whitelist let's deposit them into the chest !  
 **Note** Only the owner of the chest can deposit.
@@ -99,7 +100,7 @@ npx hardhat --network mumbai run scripts/6_batchDeposit.ts
 ```
 
 You should now be able to see the tx on your console.
-```console
+```
 Batch depositing token:
     ChestERC20 => Address: 0xefec9dfdB33E1Ca06eBf70715fAeE74a53B1B182 id: 0 amounts: 12345000000000000000000
     Chest721 => Address: 0x011Ae6E8B3a3d428B3927428F995a28FC2b211A9 id: 0 amounts: 1
@@ -114,8 +115,8 @@ See tx: https://mumbai.polygonscan.com/tx/0xc5eefd3a5bf3dcf1cfd9a185f4da7a24b454
 ```
 
 ### STEP 7: Look what's in the chest
-*contracts/Chest/Chest.sol*
-`look`
+*/contracts/Chest/Chest.sol*  
+`function look() external view returns (address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts, uint8[] memory type_)`
 
 Everyone can now see what is in the chest.  
 
@@ -127,7 +128,7 @@ You should see the following output on your console with of course different add
 **Note:** The following output is a standardized information output, it will always give an object ordered that way.
 It will be easier to interact with more chests for futur smart contract integration.
 
-```console
+```
 Tokens in chest
 
 items:  [
@@ -158,9 +159,9 @@ type_:  [ 1, 2, 3, 3, 3, 3 ]
 ```
 
 ### STEP 8: Loot tokens
-*contracts/Chest/Chest.sol*
-`batchLoot`
-`loot`
+*/contracts/Chest/Chest.sol*  
+`function loot(address item, uint256 tokenId, uint256 amount) external virtual returns (address[] memory items, uint256[] memory, tokenIds, uint256[] memory amounts, uint8[] memory type_)`  
+`function batchLoot(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts) external virtual returns(address[] memory items_, uint256[] memory tokenIds_, uint256[] memory amounts_, uint8[] memory type_)`
 
 Good job if you arrived that far this will be the last step (and the most funny one 🥳) let's loot partially the chest 🥷  
 
@@ -171,7 +172,7 @@ npx hardhat --network mumbai run scripts/8_batchLoot.ts
 ```
 
 You should now be able to see the tx on your console.
-```console
+```
 Batch looting token:
     ChestERC20 => Address: 0xefec9dfdB33E1Ca06eBf70715fAeE74a53B1B182 id: 0 amounts: 45000000000000000000
     Chest721 => Address: 0x011Ae6E8B3a3d428B3927428F995a28FC2b211A9 id: 0 amounts: 1
