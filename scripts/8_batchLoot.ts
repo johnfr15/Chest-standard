@@ -54,13 +54,13 @@ async function main() {
   const looted = await chest.callStatic.batchLoot(tokens, ids, amounts);
   tx = await chest.batchLoot(tokens, ids, amounts);
   receipt = await tx.wait();
-  console.log("Tokens Deposited sucessfully !");
+  console.log("Tokens Looted sucessfully !");
   console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`)
 
   console.log("Looted:\n");
-  console.log("items: ", looted.items)
-  console.log("tokenIds: ", looted.tokenIds)
-  console.log("amounts: ", looted.amounts)
+  console.log("items: ", looted.items_)
+  console.log("tokenIds: ", looted.tokenIds_)
+  console.log("amounts: ", looted.amounts_)
   console.log("type_: ", looted.type_)
 
 }

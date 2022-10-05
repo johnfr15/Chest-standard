@@ -21,7 +21,6 @@ async function main() {
   }
 
   const chest = await ethers.getContractAt("Chest", contracts.Chest[hardhat.network.name].address, deployer);
-  console.log(chest)
 
   // Add addresses to whitelist and the type of the token
   whitelist.push(contracts.ChestERC20[hardhat.network.name].address);
