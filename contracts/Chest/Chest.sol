@@ -164,9 +164,13 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
      * WARNING: items <=> tokenIds <=> amounts {indexes} much match each others.
      *
      * Example: Bob want to withdraw 10 DAI token and 1 (ERC721) GOTCHI {id: 21345} and 2 (ERC1155) Aave boat {id: 35}, here is his input.
-     *  items = ["0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", "0x86935F11C86623deC8a25696E1C19a8659CbF95d", "0x86935F11C86623deC8a25696E1C19a8659CbF95d"],
-     *  tokenIds = [{whatever id as it is a ERC20}, 21345, 35],
-     *  amounts = ["10", "1", "2"]  
+     * - items = [
+        "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", 
+        "0x86935F11C86623deC8a25696E1C19a8659CbF95d", 
+        "0x86935F11C86623deC8a25696E1C19a8659CbF95d"
+        ],
+     * - tokenIds = [{whatever id as it is a ERC20}, 21345, 35],
+     * - amounts = ["10", "1", "2"]  
      *
      * Requirements:
      * 
