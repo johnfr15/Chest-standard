@@ -47,7 +47,7 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
      * @dev Throws if locked is set to true.
      */
     modifier notLocked() {
-      require(_locked == false, "This chest is actually locked");
+      require(locked == false, "This chest is actually locked");
         _;
     }
 
