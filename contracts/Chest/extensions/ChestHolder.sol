@@ -16,7 +16,7 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
 
     enum Token { ZERO, ERC20, ERC721, ERC1155 }
 
-    bool private _locked;
+    bool public locked;
 
     // Check if the token can be stored in the chest (only aavegotchi & GW3S tokens allowed)
     mapping(address => bool) public tokenWhiteListed;
@@ -221,7 +221,7 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
      * - Only owner can use this lock
      */
     function switchLock() external onlyOwner {
-      _locked = !_locked;
+      locked = !locked;
     }
 
     /***********************************|
