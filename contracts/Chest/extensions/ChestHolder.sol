@@ -16,6 +16,8 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
 
     enum Token { ZERO, ERC20, ERC721, ERC1155 }
 
+    bool private _locked;
+
     // Check if the token can be stored in the chest (only aavegotchi & GW3S tokens allowed)
     mapping(address => bool) public tokenWhiteListed;
 
@@ -36,6 +38,19 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
 
     // Check if ERC20 or ERC721 is in the chest: contract => token id => boolean
     mapping(address => Token) public tokenType;
+
+    /***********************************|
+   |              Modifiers             |
+   |__________________________________*/
+
+    /**
+     * @dev Throws if locked is set to true.
+     */
+    modifier notLocked() {
+      require(_locked == false, "This chest is actually locked");
+        _;
+    }
+
 
     /***********************************|
    |           Write Functions          |
@@ -153,33 +168,27 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
      * @dev Authorize tokens to be stored in the chest 
      *
      * @param tokens: An array of all the tokens to be white listed to be stored in.
-     * @param tokenType_: An array of types corresponding with the address of token to be whitelisted.
-     * @notice The type design of the tokens is as follow.
-     * - ERC20 => 1
-     * - ERC721 => 2
-     * - ERC1155 => 3
      *
      * Requirements:
      *
      * - Only owner can whitelist
      * - Only ERC20, ERC721, ERC1155 accepted
      */
-    function addWhiteList(address[] memory tokens, uint8[] memory tokenType_) external onlyOwner {
-      require(tokens.length == tokenType_.length, "whiteListTokens: parameters are not the same length");
+    function addWhitelist(address[] memory tokens) external onlyOwner {
 
       for(uint i; i < tokens.length; i++) {
-        if (tokenType_[i] == uint8(Token.ERC20)) {
-          require(ERC20(tokens[i]).decimals() > 0, "ChestHolder: Not an erc20 token");
+
+        if (tokens[i].code.length == 0) revert(string(abi.encodePacked("ChestHolder: token ", tokens[i].toHexString(), " is not a smart contract")));
+
+        if (_isERC20(tokens[i])) {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC20;
         }
-        else if (tokenType_[i] == uint8(Token.ERC721)) {
-          require(IERC721(tokens[i]).supportsInterface(0x80ac58cd), "addWhiteList: token is not a ERC721");
+        else if (_isERC721(tokens[i])) {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC721;
         }
-        else if (tokenType_[i] == uint8(Token.ERC1155)) {
-          require(IERC1155(tokens[i]).supportsInterface(0xd9b67a26), "addWhiteList: token is not a ERC1155");
+        else if (_isERC1155(tokens[i])) {
           tokenWhiteListed[tokens[i]] = true;
           tokenType[tokens[i]] = Token.ERC1155;
         }
@@ -202,5 +211,59 @@ abstract contract ChestHolder is IERC1155Receiver, ERC721Holder, Ownable {
       for(uint i; i < tokens.length; i++) {
         delete tokenWhiteListed[tokens[i]];
       }
+    }
+
+    /**
+     * @dev Lock/unlock the chest meaning that no one can loot if it is locked.
+     *
+     * Requirements:
+     *
+     * - Only owner can use this lock
+     */
+    function switchLock() external onlyOwner {
+      _locked = !_locked;
+    }
+
+    /***********************************|
+   |          Private Functions         |
+   |__________________________________*/
+
+    /**
+     * @dev Check if the given address is a ERC20 standard. 
+     *
+     * @param addr: The token address to be verified.
+     */
+    function _isERC20(address addr) private view returns(bool) {
+        try ERC20(addr).decimals() returns (uint8 decimals) {
+            return decimals > 0;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * @dev Check if the given address is a ERC721 standard. 
+     *
+     * @param addr: The token address to be verified.
+     */
+    function _isERC721(address addr) private view returns(bool) {
+        try IERC721(addr).supportsInterface(0x80ac58cd) returns (bool result) {
+            return result;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * @dev Check if the given address is a ERC1155 standard. 
+     *
+     * @param addr: The token address to be verified.
+     */
+    function _isERC1155(address addr) private view returns(bool) {
+        try IERC1155(addr).supportsInterface(0xd9b67a26) returns (bool result) {
+            return result;
+        } catch {
+            return false;
+        }
     }
 }

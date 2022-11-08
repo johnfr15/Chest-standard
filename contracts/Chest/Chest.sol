@@ -75,7 +75,7 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
         address[] memory items, 
         uint256[] memory tokenIds, 
         uint256[] memory amounts
-    ) external virtual onlyOwner returns(bool success) {
+    ) external virtual onlyOwner notLocked returns(bool success) {
         require(items.length == tokenIds.length && 
                 items.length == amounts.length,
                 "Chest: length of items and ids and amounts are not the same.");
@@ -114,7 +114,7 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
      *
      * Emits a {Looted} event.
      */
-    function loot(address item, uint256 tokenId, uint256 amount) external virtual nonReentrant returns (
+    function loot(address item, uint256 tokenId, uint256 amount) external virtual nonReentrant notLocked returns (
     address[] memory items, 
     uint256[] memory tokenIds, 
     uint256[] memory amounts, 
@@ -184,7 +184,7 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
         address[] memory items, 
         uint256[] memory tokenIds, 
         uint256[] memory amounts
-    ) external virtual nonReentrant returns(
+    ) external virtual nonReentrant notLocked returns(
         address[] memory items_, 
         uint256[] memory tokenIds_, 
         uint256[] memory amounts_, 
