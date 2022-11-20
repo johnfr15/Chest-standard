@@ -14,7 +14,7 @@ async function main() {
     // Deploying token
     console.log("Deploying ERC1155...")
     const ERC1155 = await ethers.getContractFactory("ChestERC1155", deployer);
-    const erc1155 = await ERC1155.deploy();
+    const erc1155 = await ERC1155.deploy("yolo");
     await erc1155.deployed();
   
     // Store address in file "./helpers/deployed.json"
