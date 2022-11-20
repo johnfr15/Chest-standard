@@ -75,23 +75,31 @@ contract Chest is IChest, ChestHolder, ReentrancyGuard {
         address[] memory items, 
         uint256[] memory tokenIds, 
         uint256[] memory amounts
-    ) external virtual onlyOwner notLocked returns(bool success) {
+    ) external virtual onlyOwner notLocked returns(bool success)
+    {
         require(items.length == tokenIds.length && 
                 items.length == amounts.length,
                 "Chest: length of items and ids and amounts are not the same.");
+
+        uint8[] memory types = new uint8[](items.length);
         
         for (uint i; i < items.length; i++) {
             if (tokenType[items[i]] == Token.ERC20) {
                 IERC20(items[i]).transferFrom(msg.sender, address(this), amounts[i]);
                 onERC20Received(address(this), msg.sender, amounts[i], items[i]);
+                types[i] = uint8(Token.ERC20);
             } else if (tokenType[items[i]] == Token.ERC721) {
                 IERC721(items[i]).safeTransferFrom(msg.sender, address(this), tokenIds[i]);
+                types[i] = uint8(Token.ERC721);
             } else if (tokenType[items[i]] == Token.ERC1155) {
                 IERC1155(items[i]).safeTransferFrom(msg.sender, address(this), tokenIds[i], amounts[i], "");
+                types[i] = uint8(Token.ERC1155);
             } else {
                 revert(string(abi.encodePacked("Chest: token ", items[i].toHexString(), " is not white listed to be in this chest.")));
             }
         }
+
+        emit Deposit(msg.sender, items, tokenIds, amounts, types);
 
         success = true;
     }

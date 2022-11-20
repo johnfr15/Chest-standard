@@ -11,6 +11,13 @@ interface IChest {
         uint256[] indexed tokenIds, 
         uint256[] amounts
     );
+    event Deposit(
+        address indexed depositor, 
+        address[] indexed items, 
+        uint256[] indexed tokenIds, 
+        uint256[] amounts,
+        uint8[] type_
+    );
     
     function batchDeposit(address[] memory items, uint256[] memory tokenIds, uint256[] memory amounts) external returns(bool success);
     function loot(address item, uint256 tokenId, uint256 amount) external returns(
