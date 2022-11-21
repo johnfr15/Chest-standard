@@ -14,7 +14,7 @@ async function main() {
     // Deploying token
     console.log("Deploying ERC721...");
     const ERC721 = await ethers.getContractFactory("ChestERC721", deployer);
-    const erc721 = await ERC721.deploy();
+    const erc721 = await ERC721.deploy("chestNFT", "CHESTNFT");
     await erc721.deployed();
     
     // Store address in file "./helpers/deployed.json"
@@ -24,7 +24,7 @@ async function main() {
 
     // Mint token id 0
     console.log(`\nMinting token id "0" to ${deployer.address}...`);
-    tx = await erc721.safeMint(deployer.address);
+    tx = await erc721.safeMint(deployer.address, "");
     receipt = await tx.wait();
     console.log("Token minted sucessfully !");
     console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);

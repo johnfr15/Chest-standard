@@ -14,7 +14,7 @@ async function main() {
     // Deploying token
     console.log("Deploying ERC20...");
     const ERC20 = await ethers.getContractFactory("ChestERC20", deployer);
-    const erc20 = await ERC20.deploy();
+    const erc20 = await ERC20.deploy("chestCurrency", "CHEST");
     await erc20.deployed();
     
     // Store address in file "./helpers/deployed.json"
@@ -24,7 +24,7 @@ async function main() {
 
     // Mint 10 token
     console.log(`\nMinting 1000000 tokens to ${deployer.address}...`);
-    tx = await erc20.mint(ethers.utils.parseEther("1000000"));
+    tx = await erc20.mint(deployer.address, ethers.utils.parseEther("1000000"));
     receipt = await tx.wait();
     console.log("Tokens minted sucessfully !");
     console.log(`\nSee tx: https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`);
